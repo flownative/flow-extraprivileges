@@ -1,0 +1,19 @@
+{
+    "name": "flownative/flow-extraprivileges",
+    "type": "neos-package",
+    "description": "A package with some extra privilege implementations (to be included into Flow 5.0 eventually)",
+    "license": "MIT",
+    "require": {
+        "neos/flow": "^4.0 || dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "Flownative\\Flow\\ExtraPrivileges\\": "Classes"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Flownative.Flow.ExtraPrivileges"
+        }
+    }
+}

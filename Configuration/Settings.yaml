@@ -1,0 +1,8 @@
+Neos:
+  Flow:
+    persistence:
+      doctrine:
+        eventListeners:
+          -
+            events: ['onFlush']
+            listener: 'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\Doctrine\PrivilegeEnforcementListener'

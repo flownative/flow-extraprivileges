@@ -11,6 +11,7 @@ namespace Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entit
  * source code.
  */
 
+use Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\ReadPrivilegeInterface;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Authorization\Privilege\Entity\Doctrine\EntityPrivilege;
 
@@ -22,7 +23,7 @@ use Neos\Flow\Security\Authorization\Privilege\Entity\Doctrine\EntityPrivilege;
  *
  * @Flow\Proxy(false)
  */
-class ReadPrivilege extends EntityPrivilege
+class ReadPrivilege extends EntityPrivilege implements ReadPrivilegeInterface
 {
 
 }

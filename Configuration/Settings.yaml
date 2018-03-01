@@ -6,3 +6,16 @@ Neos:
           -
             events: ['prePersist', 'preUpdate', 'preRemove']
             listener: 'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\Doctrine\PrivilegeEnforcementListener'
+
+Flownative:
+  Flow:
+    ExtraPrivileges:
+      defaultContext:
+        String: 'Neos\Eel\Helper\StringHelper'
+        Array: 'Neos\Eel\Helper\ArrayHelper'
+        Date: 'Neos\Eel\Helper\DateHelper'
+        Configuration: 'Neos\Eel\Helper\ConfigurationHelper'
+        Math: 'Neos\Eel\Helper\MathHelper'
+        Json: 'Neos\Eel\Helper\JsonHelper'
+        Security: 'Neos\Eel\Helper\SecurityHelper'
+        Type: 'Neos\Eel\Helper\TypeHelper'

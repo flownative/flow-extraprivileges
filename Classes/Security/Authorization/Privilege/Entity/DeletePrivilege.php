@@ -11,10 +11,7 @@ namespace Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entit
  * source code.
  */
 
-use Neos\Eel\CompilingEvaluator;
-use Neos\Eel\Utility;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Security\Authorization\Privilege\PrivilegeSubjectInterface;
 
 /**
  * A privilege to secure entity deletion.
@@ -23,20 +20,4 @@ use Neos\Flow\Security\Authorization\Privilege\PrivilegeSubjectInterface;
  */
 class DeletePrivilege extends AbstractPrivilege implements DeletePrivilegeInterface
 {
-    /**
-     * Returns TRUE, if this privilege covers the given subject.
-     *
-     * @param PrivilegeSubjectInterface|EntityPrivilegeSubject $subject
-     * @return boolean
-     * @throws \Neos\Eel\Exception
-     */
-    public function matchesSubject(PrivilegeSubjectInterface $subject)
-    {
-        $context = ['entity' => $subject->getEntity(), 'originalEntityData' => $subject->getOriginalEntityData()];
-
-        $evaluator = $this->objectManager->get(CompilingEvaluator::class);
-        $result = Utility::evaluateEelExpression($this->getMatcher(), $evaluator, $context);
-
-        return (bool)$result;
-    }
 }

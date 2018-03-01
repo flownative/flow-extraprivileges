@@ -4,5 +4,5 @@ Neos:
       doctrine:
         eventListeners:
           -
-            events: ['onFlush']
+            events: ['prePersist', 'preUpdate', 'preRemove']
             listener: 'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\Doctrine\PrivilegeEnforcementListener'

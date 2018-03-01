@@ -13,8 +13,8 @@ namespace Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entit
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityNotFoundException;
-use Doctrine\ORM\Event\OnFlushEventArgs;
-use Doctrine\ORM\UnitOfWork;
+use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\CreatePrivilegeInterface;
 use Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\DeletePrivilegeInterface;
 use Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\EntityPrivilegeSubject;
@@ -62,38 +62,56 @@ class PrivilegeEnforcementListener
     protected $entityManager;
 
     /**
-     * An onFlush event listener used to act upon persistence.
-     *
-     * @param OnFlushEventArgs $eventArgs
+     * @param LifecycleEventArgs $eventArgs
      * @return void
-     * @throws AuthenticationRequiredException
      * @throws AccessDeniedException
+     * @throws AuthenticationRequiredException
+     * @throws NoTokensAuthenticatedException
      */
-    public function onFlush(OnFlushEventArgs $eventArgs)
+    public function prePersist(LifecycleEventArgs $eventArgs)
     {
-        try {
-            $noTokensAuthenticatedException = null;
-            $this->authenticationManager->authenticate();
-        } catch (EntityNotFoundException $exception) {
-            throw new AuthenticationRequiredException('Could not authenticate. Looks like a broken session.', 1519643154519, $exception);
-        } catch (NoTokensAuthenticatedException $noTokensAuthenticatedException) {
-            // checked in checkSubject, the privilege could still be available to "Neos.Flow:Everybody"
-        }
+        $noTokensAuthenticatedException = $this->authenticate();
+        $entity = $eventArgs->getObject();
+        $originalEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
 
-        /** @var UnitOfWork $unitOfWork */
-        $unitOfWork = $this->entityManager->getUnitOfWork();
+        $this->checkSubject($entity, $originalEntityData, CreatePrivilegeInterface::class, $noTokensAuthenticatedException);
+    }
 
-        foreach ($unitOfWork->getScheduledEntityInsertions() as $entity) {
-            $this->checkSubject($entity, [], CreatePrivilegeInterface::class, $noTokensAuthenticatedException);
-        }
+    /**
+     * @param PreUpdateEventArgs $eventArgs
+     * @return void
+     * @throws AccessDeniedException
+     * @throws AuthenticationRequiredException
+     * @throws NoTokensAuthenticatedException
+     */
+    public function preUpdate(PreUpdateEventArgs $eventArgs)
+    {
+        $noTokensAuthenticatedException = $this->authenticate();
+        $entity = $eventArgs->getObject();
+        $changeSet = $eventArgs->getEntityChangeSet();
+        $alreadyUpdatedEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
+        $originalEntityData = array_merge($alreadyUpdatedEntityData, array_combine(array_keys($changeSet), array_column(array_values($changeSet), 0)));
 
-        foreach ($unitOfWork->getScheduledEntityUpdates() as $entity) {
-            $this->checkSubject($entity, [], UpdatePrivilegeInterface::class, $noTokensAuthenticatedException);
-        }
+        $this->checkSubject($entity, $originalEntityData, UpdatePrivilegeInterface::class, $noTokensAuthenticatedException);
+    }
 
-        foreach ($unitOfWork->getScheduledEntityDeletions() as $entity) {
-            $this->checkSubject($entity, [], DeletePrivilegeInterface::class, $noTokensAuthenticatedException);
-        }
+    /**
+     * Removal must be checked using a preRemove event, since at this point the original entity data is still
+     * available. Once the remove has been done, it is unset in the UoW by Doctrine.
+     *
+     * @param LifecycleEventArgs $eventArgs
+     * @return void
+     * @throws AccessDeniedException
+     * @throws AuthenticationRequiredException
+     * @throws NoTokensAuthenticatedException
+     */
+    public function preRemove(LifecycleEventArgs $eventArgs)
+    {
+        $noTokensAuthenticatedException = $this->authenticate();
+        $entity = $eventArgs->getObject();
+        $originalEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
+
+        $this->checkSubject($entity, $originalEntityData, DeletePrivilegeInterface::class, $noTokensAuthenticatedException);
     }
 
     /**
@@ -117,6 +135,24 @@ class PrivilegeEnforcementListener
             }
             throw new AccessDeniedException($this->renderDecisionReasonMessage($reason), 1519826436101);
         }
+    }
+
+    /**
+     * @return \Exception|NoTokensAuthenticatedException|null
+     * @throws AuthenticationRequiredException
+     */
+    protected function authenticate()
+    {
+        try {
+            $noTokensAuthenticatedException = null;
+            $this->authenticationManager->authenticate();
+        } catch (EntityNotFoundException $exception) {
+            throw new AuthenticationRequiredException('Could not authenticate. Looks like a broken session.', 1519643154519, $exception);
+        } catch (NoTokensAuthenticatedException $noTokensAuthenticatedException) {
+            // checked in checkSubject, the privilege could still be available to "Neos.Flow:Everybody"
+        }
+
+        return $noTokensAuthenticatedException;
     }
 
     /**

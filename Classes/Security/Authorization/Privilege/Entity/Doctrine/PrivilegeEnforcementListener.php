@@ -70,6 +70,10 @@ class PrivilegeEnforcementListener
      */
     public function prePersist(LifecycleEventArgs $eventArgs)
     {
+        if ($this->securityContext->canBeInitialized() === false) {
+            return;
+        }
+
         $noTokensAuthenticatedException = $this->authenticate();
         $entity = $eventArgs->getObject();
         $originalEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
@@ -86,6 +90,10 @@ class PrivilegeEnforcementListener
      */
     public function preUpdate(PreUpdateEventArgs $eventArgs)
     {
+        if ($this->securityContext->canBeInitialized() === false) {
+            return;
+        }
+
         $noTokensAuthenticatedException = $this->authenticate();
         $entity = $eventArgs->getObject();
         $changeSet = $eventArgs->getEntityChangeSet();
@@ -107,6 +115,10 @@ class PrivilegeEnforcementListener
      */
     public function preRemove(LifecycleEventArgs $eventArgs)
     {
+        if ($this->securityContext->canBeInitialized() === false) {
+            return;
+        }
+
         $noTokensAuthenticatedException = $this->authenticate();
         $entity = $eventArgs->getObject();
         $originalEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);

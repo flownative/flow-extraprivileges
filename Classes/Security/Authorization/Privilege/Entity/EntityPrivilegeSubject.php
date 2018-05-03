@@ -22,15 +22,15 @@ class EntityPrivilegeSubject implements EntityPrivilegeSubjectInterface
     protected $entity;
 
     /**
-     * @var array
+     * @var object
      */
     private $originalEntityData;
 
     /**
      * @param object $entity
-     * @param array $originalEntityData
+     * @param object $originalEntityData
      */
-    public function __construct($entity, array $originalEntityData)
+    public function __construct($entity, $originalEntityData)
     {
         $this->entity = $entity;
         $this->originalEntityData = $originalEntityData;
@@ -45,7 +45,7 @@ class EntityPrivilegeSubject implements EntityPrivilegeSubjectInterface
     }
 
     /**
-     * @return array
+     * @return object
      */
     public function getOriginalEntityData()
     {

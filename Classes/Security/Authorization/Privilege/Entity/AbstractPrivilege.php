@@ -46,7 +46,7 @@ abstract class AbstractPrivilege extends FlowAbstractPrivilege
             return false;
         }
 
-        $context = ['entity' => $subject->getEntity(), 'originalEntityData' => [$subject->getOriginalEntityData()]];
+        $context = ['entity' => $subject->getEntity(), 'originalEntityData' => $subject->getOriginalEntityData()];
 
         return (bool)$this->evaluateEelExpression($this->getMatcher(), $context);
     }

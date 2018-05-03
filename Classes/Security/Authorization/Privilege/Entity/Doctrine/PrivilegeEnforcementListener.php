@@ -76,7 +76,7 @@ class PrivilegeEnforcementListener
 
         $noTokensAuthenticatedException = $this->authenticate();
         $entity = $eventArgs->getObject();
-        $originalEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
+        $originalEntityData = (object)$eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
 
         $this->checkSubject($entity, $originalEntityData, CreatePrivilegeInterface::class, $noTokensAuthenticatedException);
     }
@@ -98,7 +98,7 @@ class PrivilegeEnforcementListener
         $entity = $eventArgs->getObject();
         $changeSet = $eventArgs->getEntityChangeSet();
         $alreadyUpdatedEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
-        $originalEntityData = array_merge($alreadyUpdatedEntityData, array_combine(array_keys($changeSet), array_column(array_values($changeSet), 0)));
+        $originalEntityData = (object)array_merge($alreadyUpdatedEntityData, array_combine(array_keys($changeSet), array_column(array_values($changeSet), 0)));
 
         $this->checkSubject($entity, $originalEntityData, UpdatePrivilegeInterface::class, $noTokensAuthenticatedException);
     }
@@ -121,7 +121,7 @@ class PrivilegeEnforcementListener
 
         $noTokensAuthenticatedException = $this->authenticate();
         $entity = $eventArgs->getObject();
-        $originalEntityData = $eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
+        $originalEntityData = (object)$eventArgs->getEntityManager()->getUnitOfWork()->getOriginalEntityData($entity);
 
         $this->checkSubject($entity, $originalEntityData, DeletePrivilegeInterface::class, $noTokensAuthenticatedException);
     }
@@ -130,7 +130,7 @@ class PrivilegeEnforcementListener
      * Check if the given $entity matches any implementation of the given $privilegeType.
      *
      * @param object $entity
-     * @param object|array $originalEntityData
+     * @param object $originalEntityData
      * @param string $privilegeType
      * @param NoTokensAuthenticatedException $noTokensAuthenticatedException
      * @return void

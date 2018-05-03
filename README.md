@@ -77,7 +77,7 @@ item is an array and will never match a check against a class!
 
 ##### Eel helpers
 
-In addition to thess two, Eel helpers are available in the context, as configured in the settings
+In addition to these two, Eel helpers are available in the context, as configured in the settings
 with `Flownative.Flow.ExtraPrivileges.defaultContext`:
 
 - `String`: `Neos\Eel\Helper\StringHelper`

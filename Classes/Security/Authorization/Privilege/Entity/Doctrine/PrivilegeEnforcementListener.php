@@ -2,9 +2,9 @@
 namespace Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\Doctrine;
 
 /*
- * This file is part of the Neos.Flow package.
+ * This file is part of the Flownative.Flow.ExtraPrivileges package.
  *
- * (c) Contributors of the Neos Project - www.neos.io
+ * (c) Flownative GmbH - www.flownative.com
  *
  * This package is Open Source Software. For the full copyright and license
  * information, please view the LICENSE file which was distributed with this

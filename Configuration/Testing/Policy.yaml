@@ -1,0 +1,106 @@
+privilegeTargets:
+
+  'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\Doctrine\ReadPrivilege':
+    'Flownative.Flow.ExtraPrivileges:ReadInvoice':
+      matcher: 'isType("Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice")'
+    'Flownative.Flow.ExtraPrivileges:ReadExpensiveInvoice':
+      matcher: >
+        isType("Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice")
+        && property("amount") > 10
+
+  # the "CreatePrivilege" is checked only for freshly created entities
+  'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\CreatePrivilege':
+    'Flownative.Flow.ExtraPrivileges:CreateInvoice':
+      # matches any "Invoice" entity
+      matcher: 'q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")'
+    'Flownative.Flow.ExtraPrivileges:CreateExpensiveInvoice':
+      # matches ony "Invoice" entities with a total "amount" of more than 10
+      matcher: >
+        q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")
+        && q(entity).property("amount") > 10
+
+  # the "UpdatePrivilege" is checked only for existing entities that are updated
+  'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\UpdatePrivilege':
+    'Flownative.Flow.ExtraPrivileges:UpdateInvoice':
+      # matches any "Invoice" entity being updated
+      matcher: 'q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")'
+    'Flownative.Flow.ExtraPrivileges:UpdateExpensiveInvoice':
+      # matches only "Invoice" entities being updated with a total "amount" of more than 10
+      # in either the (unchanged) "originalEntityData" or the already changed "entity"
+      matcher: >
+        q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")
+        && (q(entity).property("amount") > 10
+        || q(originalEntityData).property("amount") > 10)
+
+  'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\DeletePrivilege':
+    'Flownative.Flow.ExtraPrivileges:DeleteInvoice':
+      # matches any "Invoice" entity
+      matcher: 'q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")'
+    'Flownative.Flow.ExtraPrivileges:DeleteExpensiveInvoice':
+      # matches only "Invoice" entities being updated with a total "amount" of more than 10
+      # in the (unchanged) "originalEntityData"
+      matcher: >
+        q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")
+        && q(originalEntityData).property("amount") > 10
+
+roles:
+
+  'Flownative.Flow.ExtraPrivileges:RegularUser':
+    privileges:
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:ReadInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:ReadExpensiveInvoice'
+        permission: DENY
+
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:CreateInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:CreateExpensiveInvoice'
+        permission: DENY
+
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:DeleteInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:DeleteExpensiveInvoice'
+        permission: DENY
+
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateExpensiveInvoice'
+        permission: DENY
+
+  'Flownative.Flow.ExtraPrivileges:PrivilegedUser':
+    privileges:
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:ReadInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:ReadExpensiveInvoice'
+        permission: GRANT
+
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:CreateInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:CreateExpensiveInvoice'
+        permission: GRANT
+
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:DeleteInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:DeleteExpensiveInvoice'
+        permission: GRANT
+
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateInvoice'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateExpensiveInvoice'
+        permission: GRANT

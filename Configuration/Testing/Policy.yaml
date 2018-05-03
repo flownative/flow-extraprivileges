@@ -36,6 +36,11 @@ privilegeTargets:
       matcher: >
         q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")
         && q([originalEntityData, entity]).updatesProperty("recipient")
+    'Flownative.Flow.ExtraPrivileges:UpdateInvoiceRecipientAndAmount':
+      # matches only "Invoice" entities having their "recipient" and "amount" updated
+      matcher: >
+        q(entity).is("[instanceof Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice]")
+        && q([originalEntityData, entity]).updatesProperties(["recipient", "amount"])
 
   'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\DeletePrivilege':
     'Flownative.Flow.ExtraPrivileges:DeleteInvoice':
@@ -82,6 +87,9 @@ roles:
       -
         privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateInvoiceRecipient'
         permission: DENY
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateInvoiceRecipientAndAmount'
+        permission: DENY
 
   'Flownative.Flow.ExtraPrivileges:PrivilegedUser':
     privileges:
@@ -114,4 +122,7 @@ roles:
         permission: GRANT
       -
         privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateInvoiceRecipient'
+        permission: GRANT
+      -
+        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:UpdateInvoiceRecipientAndAmount'
         permission: GRANT

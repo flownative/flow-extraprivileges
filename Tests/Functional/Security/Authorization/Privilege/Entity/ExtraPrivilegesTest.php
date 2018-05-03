@@ -574,4 +574,48 @@ class ExtraPrivilegesTest extends FunctionalTestCase
         $this->invoiceRepository->remove($invoice);
         $this->persistenceManager->persistAll();
     }
+
+    /*
+     * Further tests
+     */
+
+    /**
+     * @test
+     * @expectedException \Neos\Flow\Security\Exception\AccessDeniedException
+     */
+    public function regularUserIsNotAllowedToUpdateInvoiceRecipient()
+    {
+        $this->authenticateRoles(['Flownative.Flow.ExtraPrivileges:PrivilegedUser']);
+
+        $invoice = new Fixtures\Domain\Model\Invoice();
+        $invoice->setAmount(5);
+        $invoice->setRecipient('John Doe');
+        $this->invoiceRepository->add($invoice);
+        $this->persistenceManager->persistAll();
+
+        $this->authenticateRoles(['Flownative.Flow.ExtraPrivileges:RegularUser']);
+
+        $invoice->setRecipient('Jane Smith');
+        $this->invoiceRepository->update($invoice);
+        $this->persistenceManager->persistAll();
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function privilegedUserIsAllowedToUpdateInvoiceRecipient()
+    {
+        $this->authenticateRoles(['Flownative.Flow.ExtraPrivileges:PrivilegedUser']);
+
+        $invoice = new Fixtures\Domain\Model\Invoice();
+        $invoice->setAmount(5);
+        $invoice->setRecipient('John Doe');
+        $this->invoiceRepository->add($invoice);
+        $this->persistenceManager->persistAll();
+
+        $invoice->setRecipient('Jane Smith');
+        $this->invoiceRepository->update($invoice);
+        $this->persistenceManager->persistAll();
+    }
 }

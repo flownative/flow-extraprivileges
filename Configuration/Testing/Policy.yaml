@@ -1,5 +1,6 @@
 privilegeTargets:
 
+  # the "ReadPrivilege" is checked only for existing entities being read
   'Flownative\Flow\ExtraPrivileges\Security\Authorization\Privilege\Entity\Doctrine\ReadPrivilege':
     'Flownative.Flow.ExtraPrivileges:ReadInvoice':
       matcher: 'isType("Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures\Domain\Model\Invoice")'
@@ -60,14 +61,13 @@ roles:
       -
         privilegeTarget: 'Flownative.Flow.ExtraPrivileges:ReadInvoice'
         permission: GRANT
-      -
-        privilegeTarget: 'Flownative.Flow.ExtraPrivileges:ReadExpensiveInvoice'
-        permission: DENY
 
       -
         privilegeTarget: 'Flownative.Flow.ExtraPrivileges:CreateInvoice'
         permission: GRANT
       -
+        # this DENY is needed, since the "CreateInvoice" above supplies a GRANT because it
+        # is not limited to invoices with an amount below 10. Same applies further down.
         privilegeTarget: 'Flownative.Flow.ExtraPrivileges:CreateExpensiveInvoice'
         permission: DENY
 

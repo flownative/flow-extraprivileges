@@ -12,7 +12,7 @@ namespace Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Authorizatio
  */
 
 use Doctrine\ORM\EntityManagerInterface;
-use Neos\Flow\Persistence\Doctrine\PersistenceManager;
+use Neos\Flow\Persistence\Doctrine\PersistenceManager as DoctrinePersistenceManager;
 use Flownative\Flow\ExtraPrivileges\Tests\Functional\Security\Fixtures;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Tests\FunctionalTestCase;
@@ -43,10 +43,11 @@ class ExtraPrivilegesTest extends FunctionalTestCase
     public function setUp()
     {
         parent::setUp();
-        if (!$this->persistenceManager instanceof PersistenceManager) {
+        if (!$this->persistenceManager instanceof DoctrinePersistenceManager) {
             $this->markTestSkipped('Doctrine persistence is not enabled');
         }
 
+        /** @noinspection PhpParamsInspection */
         $this->invoiceRepository = new Fixtures\Domain\Repository\InvoiceRepository();
     }
 

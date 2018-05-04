@@ -89,6 +89,16 @@ with `Flownative.Flow.ExtraPrivileges.defaultContext`:
 - `Security`: `Neos\Eel\Helper\SecurityHelper`
 - `Type`: `Neos\Eel\Helper\TypeHelper`
 
+### Fluid (view) integration
+
+The `ifAccess` view helper is used to check for access to a privilege target. With the new
+privileges, it has been expanded to accept the entity to check against in the parameter
+`subject`.
+
+    <f:security.ifAccess privilegeTarget="somePrivilegeTargetIdentifier" subject="{someEntity}">
+       This is being shown in case you have access to the given privilege target
+    </f:security.ifAccess>
+
 ## Background
 
 Further information and details on the reasoning behind this package may be found in

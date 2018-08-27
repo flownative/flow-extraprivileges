@@ -1,3 +1,7 @@
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+[![Packagist](https://img.shields.io/packagist/v/flownative/flow-extraprivileges.svg)](https://packagist.org/packages/flownative/flow-extraprivileges)
+[![Maintenance level: Acquaintance](https://img.shields.io/badge/maintenance-%E2%99%A1-ff69b4.svg)](https://www.flownative.com/en/products/open-source.html)
+
 # Custom Entity Privileges for Flow
 
 A package with some extra privilege implementations (to be included into Flow 5.0 eventually)
